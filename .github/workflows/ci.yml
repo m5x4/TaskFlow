@@ -99,6 +99,13 @@ jobs:
         working-directory: web
         run: npx tsc --noEmit
 
+      # No framework: node strips the types and runs the file. The
+      # --experimental-strip-types flag is required on Node 22 and is a no-op
+      # from 22.18 on, where stripping is enabled by default.
+      - name: Unit tests
+        working-directory: web
+        run: npm test
+
       # No Supabase env vars needed: both pages are force-dynamic and guard on
       # `isConfigured`, so nothing queries the database at build time. If a page
       # ever loses force-dynamic, this job fails — which is the warning worth
