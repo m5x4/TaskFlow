@@ -26,9 +26,33 @@ Working end-to-end. Real emails have been scanned into real tasks.
 | Scheduled scan | launchd agent every 30 min, installed 11 Aug 2026 |
 | Scan now button | Working — spawns the CLI, live progress bar, backlog count |
 | Drag and drop | Working — drag a card between columns, or Shift+←/→ |
+| Git + CI | Repo initialised 14 Aug 2026, one commit. CI written, never run |
 
 **Not done:** `TARGET_REPO_PATH` unset so file suggestions are off, no
-deployment, no auth gate, frontend never tested below 1280px, no git history.
+deployment, no auth gate, frontend never tested below 1280px, no git remote.
+
+## CI (added 14 Aug 2026)
+
+`.github/workflows/ci.yml` — three jobs, no secrets, all offline: the
+extraction suite, the database suite against a `postgres:17` service
+container, and the web typecheck plus build. **Never actually run on GitHub**
+— there is no remote yet. All three were verified locally first.
+
+- **The live Gemini suite and everything Gmail stay out.** Live calls burn
+  free-tier quota, and the refresh token expires every 7 days while the OAuth
+  app is in Testing, so a live job would go red on a schedule for reasons that
+  are not code.
+- **The database job needs no migration step.** `test_db.py` applies them via
+  `db.init_db`, and a fresh container per run is exactly the empty,
+  never-reused schema the suite demands — the one thing CI does better than a
+  laptop.
+- **The web build needs no Supabase vars.** Both pages are `force-dynamic` and
+  guard on `isConfigured`, so nothing queries at build time. If a page ever
+  loses `force-dynamic` the job fails, which is the warning worth having.
+- **No CD, deliberately.** Nothing to deploy to, and `startScan` spawns the
+  local CLI. A deploy step would ship an unauthenticated board.
+- `next lint` is not run — there is no ESLint config in `web/`. `tsc --noEmit`
+  is the typecheck.
 
 ## Scan now (added 11 Aug 2026)
 
