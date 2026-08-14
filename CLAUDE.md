@@ -83,7 +83,9 @@ moving off this machine — only the spawn call would need replacing.
   the last *completed* run with a non-null `backlog_total`, so a run that dies
   early reports a stale-but-true number instead of a confident zero.
 
-Tests: `test_extract.py` 77 offline / 79 with `--live`; `test_db.py` 31.
+Tests: `test_extract.py` 77 offline (`--live` adds up to 10 more, the exact
+count depending on what the model returns); `test_db.py` 31;
+`web/test_types.mts` 28 via `npm test`.
 
 ## Drag and drop (added 11 Aug 2026)
 
@@ -109,6 +111,11 @@ other edit, so a drop sets `manually_edited` like any other human decision.
   carries `application/x-taskflow-task` (`web/lib/dnd.ts`), so a dragged link
   or file bounces off. It does not work on touch: Shift+←/→ on a focused card
   is the keyboard route, and the detail page keeps its priority selects.
+- **`web/test_types.mts` guards the inverse map** (`npm test`, 28 checks). It
+  transcribes the generated column from `migrations/001_init.sql` as a forward
+  oracle and sweeps all 48 bucket × pair combinations. Change a bucket rule and
+  it fails until the transcription is updated too — which is the point, since
+  nothing in the type system connects the two.
 
 ## Rate limiting (fixed August 2026)
 
