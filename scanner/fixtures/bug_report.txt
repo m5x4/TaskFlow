@@ -1,0 +1,16 @@
+From: Priya Raman <priya@northgatearts.org>
+Subject: Contact form is broken on mobile
+
+Hi,
+
+A few of our members have emailed me directly saying they tried to use the
+contact form on the site and nothing happened. I tested it on my iPhone this
+morning and the Send button doesn't do anything at all — no error, no
+confirmation, it just sits there. It works fine on my laptop.
+
+This is our main way of getting enquiries so we're probably losing messages.
+Could you take a look when you get a chance? Ideally before the weekend
+since we have the open day coming up.
+
+Thanks,
+Priya

@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+/*
+ * Light and dark are both first-class: the page follows the OS setting.
+ * Priority is never carried by color alone — every bucket and badge also
+ * carries a text label and a fixed position, so the board reads correctly
+ * without color perception.
+ */
+
+@theme {
+  --color-surface: #ffffff;
+  --color-surface-sunken: #f6f7f9;
+  --color-border-subtle: #e3e6ea;
+  --color-ink: #14181d;
+  --color-ink-muted: #5c6672;
+}
+
+@layer base {
+  :root {
+    color-scheme: light dark;
+  }
+
+  body {
+    @apply bg-[#f6f7f9] text-[#14181d] antialiased;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      @apply bg-[#0e1116] text-[#e6e9ee];
+    }
+  }
+}
+
+@layer components {
+  .panel {
+    @apply rounded-xl border border-[#e3e6ea] bg-white
+           dark:border-[#262c36] dark:bg-[#151a21];
+  }
+
+  .muted {
+    @apply text-[#5c6672] dark:text-[#8b95a3];
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-md px-1.5 py-0.5
+           text-[11px] font-medium whitespace-nowrap;
+  }
+
+  .field {
+    @apply rounded-md border border-[#d8dce2] bg-white px-2 py-1.5 text-sm
+           text-[#14181d]
+           focus:border-[#4b7bec] focus:ring-2 focus:ring-[#4b7bec]/25
+           focus:outline-none
+           dark:border-[#2c333d] dark:bg-[#10141a] dark:text-[#e6e9ee];
+  }
+
+  .btn {
+    @apply rounded-md border border-[#d8dce2] bg-white px-3 py-1.5 text-sm
+           font-medium transition-colors
+           hover:bg-[#f2f4f7]
+           dark:border-[#2c333d] dark:bg-[#1a2029] dark:hover:bg-[#222a35];
+  }
+
+  .btn-primary {
+    @apply rounded-md bg-[#2f6fed] px-3 py-1.5 text-sm font-medium text-white
+           transition-colors hover:bg-[#2560d8];
+  }
+}

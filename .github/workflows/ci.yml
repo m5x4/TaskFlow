@@ -1,0 +1,108 @@
+name: CI
+
+# No secrets are used anywhere in this file, and that is deliberate: every job
+# below runs offline. The live Gemini suite and anything touching Gmail stay out
+# of CI — live calls burn free-tier quota, and the Gmail refresh token expires
+# every 7 days while the OAuth app is in Testing, so a scheduled live job would
+# go red for reasons that are not code.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  scanner:
+    name: Scanner unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: scanner/requirements.txt
+
+      - name: Install dependencies
+        working-directory: scanner
+        run: pip install -r requirements.txt
+
+      # The offline suite touches no network and reads no .env — load_settings
+      # is called only inside test_live(), which needs --live.
+      - name: Run offline extraction suite
+        working-directory: scanner
+        run: python test_extract.py
+
+  database:
+    name: Database integration tests
+    runs-on: ubuntu-latest
+
+    # Postgres 17 to match Supabase (17.6). The migrations use
+    # UNIQUE NULLS NOT DISTINCT, which needs 15 or newer.
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: taskflow_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: scanner/requirements.txt
+
+      - name: Install dependencies
+        working-directory: scanner
+        run: pip install -r requirements.txt
+
+      # test_db.py applies migrations itself via db.init_db, so there is no
+      # separate migration step — and a fresh container per run is exactly the
+      # empty, non-reused schema the suite assumes. This is the one thing CI
+      # does better than a laptop.
+      - name: Run database suite
+        working-directory: scanner
+        env:
+          TASKFLOW_TEST_DB: "1"
+          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/taskflow_test
+        run: python test_db.py
+
+  web:
+    name: Web typecheck and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: web
+        run: npm ci
+
+      - name: Typecheck
+        working-directory: web
+        run: npx tsc --noEmit
+
+      # No Supabase env vars needed: both pages are force-dynamic and guard on
+      # `isConfigured`, so nothing queries the database at build time. If a page
+      # ever loses force-dynamic, this job fails — which is the warning worth
+      # having, since that would also mean shipping stale tasks.
+      - name: Build
+        working-directory: web
+        run: npm run build

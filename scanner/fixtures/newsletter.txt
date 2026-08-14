@@ -1,0 +1,17 @@
+From: Frontend Weekly <hello@frontendweekly.example>
+Subject: Issue #412 — CSS nesting lands everywhere, and a case against barrel files
+
+FRONTEND WEEKLY
+Issue #412
+
+This week: native CSS nesting is now supported across all major browsers,
+a deep dive into why barrel files slow down your bundler, and someone
+rebuilt Doom in CSS again.
+
+— CSS nesting is officially everywhere. Here's what changes.
+— The hidden cost of index.ts barrel files
+— Interview: how a small team cut their LCP in half
+— Jobs: 14 new frontend roles this week
+
+You're receiving this because you signed up at frontendweekly.example.
+Unsubscribe · Manage preferences · View in browser
