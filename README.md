@@ -38,10 +38,10 @@ score.
 Urgency and impact are judged separately, then combined into one of four
 buckets:
 
-|                  | High impact | Lower impact |
-| ---------------- | ----------- | ------------ |
-| **Urgent**       | Do now      | Quick wins   |
-| **Not urgent**   | Schedule    | Backlog      |
+|                | High impact | Lower impact |
+| -------------- | ----------- | ------------ |
+| **Urgent**     | Do now      | Quick wins   |
+| **Not urgent** | Schedule    | Backlog      |
 
 Anything you change by hand is flagged `manually_edited`, and later scans will
 not overwrite it.
@@ -89,8 +89,7 @@ authority was never granted.
 Create an API key at [aistudio.google.com/apikey](https://aistudio.google.com/apikey).
 
 **Match `GEMINI_REQUESTS_PER_MINUTE` to your model.** The free-tier per-minute
-quota differs per model — `gemini-3.5-flash` allows 5, the lite variants allow
-15. Setting it too high is what makes a scan die partway through with
+quota differs per model — `gemini-3.5-flash` allows 5, the lite variants allow 15. Setting it too high is what makes a scan die partway through with
 `429 RESOURCE_EXHAUSTED`. `taskflow doctor` makes a real call (not just
 `models.list`, which happily reports retired models that 404 on use) to confirm
 your model works before you rely on it.
@@ -133,13 +132,13 @@ npm run dev            # http://localhost:3000
 
 Other commands:
 
-| Command | Does |
-| --- | --- |
-| `doctor` | Checks config, database, Gmail, repo index |
-| `list` | Open tasks grouped by bucket |
-| `show <id>` | One task in full — accepts an id prefix |
-| `done <id>` | Mark done (`--status` for the others) |
-| `map` | Backfill file suggestions after the repo lands |
+| Command     | Does                                           |
+| ----------- | ---------------------------------------------- |
+| `doctor`    | Checks config, database, Gmail, repo index     |
+| `list`      | Open tasks grouped by bucket                   |
+| `show <id>` | One task in full — accepts an id prefix        |
+| `done <id>` | Mark done (`--status` for the others)          |
+| `map`       | Backfill file suggestions after the repo lands |
 
 ### Scan now
 
@@ -306,7 +305,7 @@ verified this app" once (Advanced > Continue), and refresh tokens stop expiring
 on the 7-day clock. Verification only matters with real users — see Multi-user
 below.
 
-Note that `token.json`'s mtime is when it was last *refreshed*, not when the
+Note that `token.json`'s mtime is when it was last _refreshed_, not when the
 refresh token was issued, so it is not a reliable age for the grant.
 
 ---
